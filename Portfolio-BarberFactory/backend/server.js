@@ -13,6 +13,19 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// These headers allow the server to handle requests from different origins (domains).
+app.use((req, res, next) => {
+  //Allows all origins (*) to access the server
+  res.header('Access-Control-Allow-Origin', '*');
+
+  // Specifies which HTTP methods (GET, PUT, POST, DELETE) are allowed.
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+
+  //Lists the allowed headers in requests, here allowing Content-Type and Authorization.
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+});
+
 // Connect to MongoDB
 connectDB();
 
@@ -23,6 +36,8 @@ app.get('/', (req, res) => {
 
 // API Routes
 app.use('/api/auth', require('./src/routes/authRoutes'));
+app.use('/api/shop', require('./src/routes/shopRoutes'));
+app.use('/api/client', require('./src/routes/clientRoutes'));
 
 // Error handling middleware
 app.use((err, req, res, next) => {
